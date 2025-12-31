@@ -1,0 +1,283 @@
+/* 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    min-height: 100vh;
+    padding: 20px;
+    font-size: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* 로고 헤더 */
+.logo-header {
+    background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(46, 125, 50, 0.3);
+    margin-bottom: 40px;
+}
+
+.logo {
+    color: white;
+    font-size: 56px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 4px;
+}
+
+.subtitle {
+    color: #e8f5e9;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+/* 폼 컨테이너 */
+.form-container, .result-container {
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    color: #2e7d32;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #81c784;
+}
+
+/* 폼 스타일 */
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+label {
+    display: block;
+    color: #2e7d32;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.help-text {
+    font-size: 16px;
+    color: #616161;
+    font-weight: normal;
+    margin-top: 8px;
+    line-height: 1.5;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    border-left: 3px solid #81c784;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 18px 20px;
+    font-size: 22px;
+    border: 3px solid #a5d6a7;
+    border-radius: 12px;
+    background: white;
+    transition: all 0.3s ease;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: #43a047;
+    box-shadow: 0 0 0 4px rgba(67, 160, 71, 0.1);
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5' stroke='%232e7d32' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 50px;
+}
+
+/* 제출 버튼 */
+.submit-btn {
+    width: 100%;
+    padding: 25px;
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* 결과 카드 */
+.result-card {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    padding: 40px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 12px;
+    border-left: 6px solid #43a047;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.result-item:last-child {
+    margin-bottom: 0;
+}
+
+.result-label {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.result-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1b5e20;
+    background: #c8e6c9;
+    padding: 12px 24px;
+    border-radius: 8px;
+}
+
+/* 추천 사유 */
+.recommendation-info {
+    background: #fff9c4;
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 6px solid #fbc02d;
+    margin-bottom: 30px;
+}
+
+.recommendation-info h3 {
+    color: #f57f17;
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+.recommendation-info p {
+    color: #5d4037;
+    font-size: 22px;
+    line-height: 1.6;
+}
+
+/* 리셋 버튼 */
+.reset-btn {
+    width: 100%;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2e7d32;
+    background: white;
+    border: 3px solid #43a047;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+}
+
+.reset-btn:hover {
+    background: #e8f5e9;
+    transform: translateY(-2px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .logo {
+        font-size: 42px;
+    }
+
+    .subtitle {
+        font-size: 20px;
+    }
+
+    .section-title {
+        font-size: 26px;
+    }
+
+    .form-container, .result-container {
+        padding: 30px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    label {
+        font-size: 20px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        font-size: 20px;
+        padding: 16px;
+    }
+
+    .submit-btn {
+        font-size: 22px;
+        padding: 20px;
+    }
+
+    .result-label,
+    .result-value {
+        font-size: 20px;
+    }
+
+    .recommendation-info h3 {
+        font-size: 22px;
+    }
+
+    .recommendation-info p {
+        font-size: 20px;
+    }
+}

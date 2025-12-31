@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제로파크골프 - 나에게 맞는 파크골프채 찾기</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 로고 헤더 -->
+        <header class="logo-header">
+            <h1 class="logo">제로파크골프</h1>
+            <p class="subtitle">나에게 맞는 파크골프채를 찾아보세요</p>
+        </header>
+
+        <!-- 입력 폼 -->
+        <div class="form-container" id="formContainer">
+            <h2 class="section-title">회원님의 정보를 입력해주세요</h2>
+
+            <form id="golfForm">
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="height">키 (cm)</label>
+                        <input type="number" id="height" name="height" min="100" max="250" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weight">몸무게 (kg)</label>
+                        <input type="number" id="weight" name="weight" min="30" max="200" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="age">나이</label>
+                        <input type="number" id="age" name="age" min="10" max="100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">성별</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">선택하세요</option>
+                            <option value="male">남성</option>
+                            <option value="female">여성</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience">구력 (년)</label>
+                    <select id="experience" name="experience" required>
+                        <option value="">선택하세요</option>
+                        <option value="beginner">입문 (1년 미만)</option>
+                        <option value="1-3">초급 (1-3년)</option>
+                        <option value="3-5">중급 (3-5년)</option>
+                        <option value="5+">고급 (5년 이상)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ballFlight">구질</label>
+                    <select id="ballFlight" name="ballFlight" required>
+                        <option value="">선택하세요</option>
+                        <option value="slice">슬라이스 (오른쪽으로 휨)</option>
+                        <option value="straight">스트레이트 (직선)</option>
+                        <option value="draw">드로우 (왼쪽으로 휨)</option>
+                        <option value="hook">훅 (크게 왼쪽으로 휨)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="armLength">팔 길이 (손목-지면 거리, cm)</label>
+                    <div class="help-text">
+                        📏 <strong>측정 방법:</strong> 운동화를 신고 벽에 등을 대고 똑바로 선 후, 팔을 몸 옆에 자연스럽게 늘어뜨린 상태에서 지면부터 손목 주름선까지의 거리를 측정합니다.<br>
+                        • <strong>키 대비 비율로 자동 계산됩니다</strong> (평균: 키의 50-52%)
+                    </div>
+                    <input type="number" id="armLength" name="armLength" min="60" max="120" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="swingSpeed">스윙 스피드 (체감)</label>
+                    <select id="swingSpeed" name="swingSpeed" required>
+                        <option value="">선택하세요</option>
+                        <option value="very-slow">매우 느림</option>
+                        <option value="slow">느림</option>
+                        <option value="normal">보통</option>
+                        <option value="fast">빠름</option>
+                        <option value="very-fast">매우 빠름</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">내게 맞는 골프채 추천받기</button>
+            </form>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div class="result-container" id="resultContainer" style="display: none;">
+            <h2 class="section-title"><span id="resultName"></span>님께 추천하는 파크골프채</h2>
+
+            <div class="result-card">
+                <div class="result-item">
+                    <div class="result-label">클럽 길이</div>
+                    <div class="result-value" id="clubLength"></div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">클럽 무게</div>
+                    <div class="result-value" id="clubWeight"></div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">스윙웨이트</div>
+                    <div class="result-value" id="swingWeight"></div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">CPM (진동수)</div>
+                    <div class="result-value" id="cpm"></div>
+                </div>
+            </div>
+
+            <div class="recommendation-info">
+                <h3>추천 사유</h3>
+                <p id="recommendationReason"></p>
+            </div>
+
+            <button class="reset-btn" onclick="resetForm()">다시 측정하기</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
