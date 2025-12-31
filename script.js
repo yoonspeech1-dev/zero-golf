@@ -1,3 +1,13 @@
+// 키 입력 시 팔 길이 자동 계산
+document.getElementById('height').addEventListener('input', function(e) {
+    const height = parseInt(e.target.value);
+    if (height && height >= 100 && height <= 250) {
+        // 키의 51%를 기본 팔 길이로 계산 (평균 비율)
+        const suggestedArmLength = Math.round(height * 0.51);
+        document.getElementById('armLength').value = suggestedArmLength;
+    }
+});
+
 // 폼 제출 이벤트 리스너
 document.getElementById('golfForm').addEventListener('submit', function(e) {
     e.preventDefault();
