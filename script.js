@@ -1,9 +1,40 @@
-// 키 입력 시 팔 길이 자동 계산
+// 팔 길이 입력 방식 전환
+const armLengthRadios = document.querySelectorAll('input[name="armLengthMethod"]');
+const armLengthInputGroup = document.getElementById('armLengthInputGroup');
+const armLengthAutoGroup = document.getElementById('armLengthAutoGroup');
+const armLengthInput = document.getElementById('armLength');
+
+armLengthRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.value === 'auto') {
+            // 자동 계산 모드
+            armLengthInputGroup.style.display = 'none';
+            armLengthAutoGroup.style.display = 'block';
+            armLengthInput.removeAttribute('required');
+
+            // 키가 입력되어 있으면 자동 계산
+            const height = parseInt(document.getElementById('height').value);
+            if (height && height >= 100 && height <= 250) {
+                const calculatedArmLength = Math.round(height * 0.515);
+                armLengthInput.value = calculatedArmLength;
+            }
+        } else {
+            // 수동 입력 모드
+            armLengthInputGroup.style.display = 'block';
+            armLengthAutoGroup.style.display = 'none';
+            armLengthInput.setAttribute('required', 'required');
+        }
+    });
+});
+
+// 키 입력 시 팔 길이 자동 계산 (자동 모드일 때만)
 document.getElementById('height').addEventListener('input', function(e) {
     const height = parseInt(e.target.value);
-    if (height && height >= 100 && height <= 250) {
-        // 키의 51%를 기본 팔 길이로 계산 (평균 비율)
-        const suggestedArmLength = Math.round(height * 0.51);
+    const isAutoMode = document.querySelector('input[name="armLengthMethod"]:checked').value === 'auto';
+
+    if (isAutoMode && height && height >= 100 && height <= 250) {
+        // 키의 51.5%를 기본 팔 길이로 계산 (평균 비율)
+        const suggestedArmLength = Math.round(height * 0.515);
         document.getElementById('armLength').value = suggestedArmLength;
     }
 });
@@ -12,17 +43,28 @@ document.getElementById('height').addEventListener('input', function(e) {
 document.getElementById('golfForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    const height = parseInt(document.getElementById('height').value);
+    const isAutoMode = document.querySelector('input[name="armLengthMethod"]:checked').value === 'auto';
+
+    // 팔 길이 결정 (자동 모드면 계산, 수동 모드면 입력값 사용)
+    let armLength;
+    if (isAutoMode) {
+        armLength = Math.round(height * 0.515);
+    } else {
+        armLength = parseInt(document.getElementById('armLength').value);
+    }
+
     // 입력값 가져오기
     const formData = {
         name: document.getElementById('name').value,
         phone: document.getElementById('phone').value,
-        height: parseInt(document.getElementById('height').value),
+        height: height,
         weight: parseInt(document.getElementById('weight').value),
         age: parseInt(document.getElementById('age').value),
         gender: document.getElementById('gender').value,
         experience: document.getElementById('experience').value,
         ballFlight: document.getElementById('ballFlight').value,
-        armLength: parseInt(document.getElementById('armLength').value),
+        armLength: armLength,
         swingSpeed: document.getElementById('swingSpeed').value
     };
 
