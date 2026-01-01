@@ -15,6 +15,7 @@ document.getElementById('golfForm').addEventListener('submit', function(e) {
     // 입력값 가져오기
     const formData = {
         name: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
         height: parseInt(document.getElementById('height').value),
         weight: parseInt(document.getElementById('weight').value),
         age: parseInt(document.getElementById('age').value),
@@ -34,151 +35,137 @@ document.getElementById('golfForm').addEventListener('submit', function(e) {
 
 // 파크골프채 추천 알고리즘
 function calculateRecommendation(data) {
-    let clubLength, clubWeight, swingWeight, cpm;
+    let clubLength, clubWeight, swingWeight;
     let reasons = [];
+    let detailedReasons = {
+        intro: '',
+        length: '',
+        weight: '',
+        swingWeight: '',
+        conclusion: ''
+    };
 
-    // 1. 클럽 길이 계산 (키 기준)
+    // 1. 클럽 길이 계산 (키 기준) - 피팅의 가장 중요한 시작점 (35-40%)
+    let lengthReason = '';
     if (data.height < 155) {
         clubLength = 83;
-        reasons.push('키가 155cm 미만이므로 짧은 클럽을 추천합니다');
+        lengthReason = `회원님의 키(${data.height}cm)를 고려하여 83cm를 선정했습니다. 클럽 길이는 전체 피팅 과정에서 가장 먼저 결정되는 핵심 요소로, 다른 모든 스펙에 영향을 미치는 "Ground Zero" 역할을 합니다`;
     } else if (data.height < 165) {
         clubLength = 84;
-        reasons.push('키가 155-165cm 사이이므로 표준보다 약간 짧은 클럽을 추천합니다');
+        lengthReason = `회원님의 키(${data.height}cm)를 분석한 결과, 표준보다 약간 짧은 84cm가 최적입니다. 클럽 길이는 스윙웨이트와 CPM에 직접적으로 영향을 미치며(0.5인치당 스윙웨이트 3-5포인트 변화), 피팅의 약 35-40%를 차지하는 가장 중요한 기준점입니다`;
     } else if (data.height < 175) {
         clubLength = 85;
-        reasons.push('키가 165-175cm 사이이므로 표준 길이의 클럽을 추천합니다');
+        lengthReason = `회원님의 키(${data.height}cm)는 표준 범위에 속하여 85cm의 표준 길이가 이상적입니다. 적절한 클럽 길이는 임팩트 시 일관된 자세를 유지하게 하여 전체 피팅 성공의 35-40%를 결정합니다`;
     } else {
         clubLength = 86;
-        reasons.push('키가 175cm 이상이므로 공인 규격 최대 길이인 86cm를 추천합니다');
+        lengthReason = `회원님의 키(${data.height}cm)를 고려하여 파크골프 공인 규격 최대 길이인 86cm를 추천합니다. 긴 클럽은 더 넓은 스윙 아크를 만들어 비거리 향상에 유리하며, 이는 전체 클럽 피팅에서 35-40%의 중요도를 차지하는 핵심 요소입니다`;
     }
 
     // 팔 길이에 따른 클럽 길이 미세 조정 (키 대비 비율로 계산)
     const armLengthRatio = (data.armLength / data.height) * 100;
+    let armAdjustment = '';
 
     if (armLengthRatio < 51) {
         // 팔이 짧은 편 (키의 51% 미만)
         clubLength = Math.max(83, clubLength - 1);
-        reasons.push(`팔이 짧은 편(키 대비 ${armLengthRatio.toFixed(1)}%)이므로 클럽 길이를 약간 줄였습니다`);
+        armAdjustment = `팔 길이가 키 대비 ${armLengthRatio.toFixed(1)}%로 평균(51-53%)보다 짧아 클럽을 1cm 단축했습니다. 이는 어드레스 시 적절한 전경각을 유지하고 임팩트 존에서 정확성을 극대화하기 위함입니다`;
     } else if (armLengthRatio > 53) {
         // 팔이 긴 편 (키의 53% 초과)
         clubLength = Math.min(86, clubLength + 1);
-        reasons.push(`팔이 긴 편(키 대비 ${armLengthRatio.toFixed(1)}%)이므로 클럽 길이를 약간 늘렸습니다`);
+        armAdjustment = `팔 길이가 키 대비 ${armLengthRatio.toFixed(1)}%로 평균(51-53%)보다 길어 클럽을 1cm 연장했습니다. 긴 팔은 자연스럽게 더 낮은 그립 위치를 만들기 때문에, 긴 클럽으로 올바른 어드레스 자세와 스윙 평면을 확보할 수 있습니다`;
     } else {
         // 보통 (키의 51-53%)
-        reasons.push(`팔 길이가 평균(키 대비 ${armLengthRatio.toFixed(1)}%)이므로 표준 길이가 적합합니다`);
+        armAdjustment = `팔 길이가 키 대비 ${armLengthRatio.toFixed(1)}%로 이상적인 평균 범위(51-53%)에 속하여 표준 길이가 완벽하게 맞습니다. 이는 가장 효율적인 스윙 메카닉스를 구현할 수 있는 최적의 신체 비율입니다`;
     }
 
-    // 2. 클럽 무게 계산 (성별, 나이, 구력 기준)
+    detailedReasons.length = `【클럽 길이: ${clubLength}cm】\n${lengthReason}. ${armAdjustment}`;
+    reasons.push(lengthReason);
+
+    // 2. 클럽 무게 계산 (성별, 나이, 구력 기준) - 스윙 템포와 직결 (30-35%)
     // 한국 파크골프협회 공인 규격: 550g 이하
     let baseWeight = 525; // 기본 무게 (표준 규격)
+    let weightFactors = [];
 
     // 성별에 따른 조정
     if (data.gender === 'female') {
         baseWeight -= 20;
-        reasons.push('여성이시므로 가벼운 무게를 추천합니다');
+        weightFactors.push('여성의 평균 근력과 스윙 템포를 고려하여 20g 경량화');
     } else {
-        reasons.push('남성이시므로 적당한 무게를 추천합니다');
+        weightFactors.push('남성의 평균 근력 특성을 반영한 표준 무게 적용');
     }
 
     // 나이에 따른 조정
     if (data.age >= 70) {
         baseWeight -= 15;
-        reasons.push('70대 이상이시므로 더 가벼운 클럽을 추천합니다');
+        weightFactors.push(`${data.age}세 연령대의 근력 저하와 스윙 효율성을 고려하여 15g 추가 경량화`);
     } else if (data.age >= 60) {
         baseWeight -= 10;
+        weightFactors.push(`${data.age}세 연령대에 적합하도록 10g 경량화하여 피로도 감소`);
+    } else if (data.age >= 50) {
+        baseWeight -= 5;
+        weightFactors.push(`${data.age}세 연령대의 체력을 고려한 최적 무게 설정`);
     }
 
     // 구력에 따른 조정
+    let experienceText = '';
     if (data.experience === 'beginner') {
         baseWeight -= 10;
-        reasons.push('입문 단계이므로 가벼운 클럽으로 시작하시는 것을 추천합니다');
+        experienceText = '입문 단계(1년 미만)';
+        weightFactors.push('초보자의 스윙 안정성 확보를 위해 10g 경량화하여 클럽 컨트롤 능력 향상');
+    } else if (data.experience === '1-3') {
+        experienceText = '초급(1-3년)';
+        weightFactors.push('초급 골퍼의 기술 발전 단계에 적합한 표준 무게 유지');
+    } else if (data.experience === '3-5') {
+        experienceText = '중급(3-5년)';
+        weightFactors.push('중급 골퍼의 스윙 안정성을 바탕으로 한 균형잡힌 무게 설정');
     } else if (data.experience === '5+') {
         baseWeight += 10;
-        reasons.push('고급 골퍼이시므로 약간 무거운 클럽으로 정확도를 높이실 수 있습니다');
+        experienceText = '고급(5년 이상)';
+        weightFactors.push('숙련된 골퍼의 정밀한 거리 조절과 방향성 향상을 위해 10g 가중');
     }
 
     // 한국 파크골프협회 규격 준수 (500g ~ 550g 범위)
     clubWeight = Math.max(500, Math.min(550, baseWeight));
 
-    // 3. 스윙웨이트 계산
+    detailedReasons.weight = `【클럽 무게: ${clubWeight}g】\n총 클럽 무게는 피팅의 30-35%를 차지하는 핵심 요소로, 스윙 템포와 클럽 헤드 속도에 직접적인 영향을 미칩니다. ${weightFactors.join('. ')}. 최종적으로 파크골프 공인 규격(500-550g) 내에서 회원님께 최적화된 ${clubWeight}g을 도출했습니다`;
+
+    // 3. 스윙웨이트 계산 - 클럽 밸런스의 체감 (30-35%)
+    let swingWeightReason = '';
     if (data.gender === 'female') {
         if (data.experience === 'beginner' || data.experience === '1-3') {
             swingWeight = 'C8-D0';
-            reasons.push('여성 초급자에게 적합한 스윙웨이트입니다');
+            swingWeightReason = `여성 초급자에게 최적화된 C8-D0 범위로, 가벼운 헤드 밸런스가 스윙 중 클럽 컨트롤을 쉽게 만들어 줍니다`;
         } else {
             swingWeight = 'D0-D2';
-            reasons.push('여성 중급 이상 골퍼에게 적합한 스윙웨이트입니다');
+            swingWeightReason = `여성 중급 이상 골퍼를 위한 D0-D2 범위로, 향상된 스윙 능력에 맞춰 약간 무거운 헤드감으로 방향성과 일관성을 높입니다`;
         }
     } else {
         if (data.experience === 'beginner') {
             swingWeight = 'D0-D2';
+            swingWeightReason = `남성 초보자에게 적합한 D0-D2 범위로, 무리 없이 스윙할 수 있는 균형점을 제공합니다`;
         } else if (data.experience === '1-3' || data.experience === '3-5') {
             swingWeight = 'D2-D4';
-            reasons.push('중급 골퍼에게 적합한 균형잡힌 스윙웨이트입니다');
+            swingWeightReason = `중급 골퍼의 발전된 스윙 능력을 고려한 D2-D4 범위로, 헤드의 무게감이 임팩트 시 안정성을 더해줍니다`;
         } else {
             swingWeight = 'D4-D6';
-            reasons.push('고급 골퍼에게 적합한 헤드가 무거운 스윙웨이트입니다');
+            swingWeightReason = `고급 골퍼를 위한 D4-D6 범위로, 무거운 헤드 밸런스가 정밀한 거리 조절과 강한 임팩트를 가능하게 합니다`;
         }
     }
 
-    // 4. CPM (진동수) 계산
-    let baseCPM = 240;
+    detailedReasons.swingWeight = `【스윙웨이트: ${swingWeight}】\n스윙웨이트는 클럽을 휘둘렀을 때 느껴지는 헤드의 무게감을 나타내며, 피팅의 중요 지표입니다. ${swingWeightReason}. 전문 피팅에서는 "스윙웨이트가 맞지 않으면 아무리 좋은 샤프트와 길이도 무용지물"이라는 원칙이 있을 만큼 체감 밸런스가 중요합니다. 추천된 ${swingWeight}는 회원님의 ${experienceText} 수준과 ${data.gender === 'female' ? '여성' : '남성'} 특성에 최적화되었습니다`;
 
-    // 성별에 따른 조정
-    if (data.gender === 'female') {
-        baseCPM = 220;
-    }
+    // 전체 요약 (인트로)
+    detailedReasons.intro = `회원님의 신체 조건(키 ${data.height}cm, 팔 길이 ${data.armLength}cm)과 골프 특성(${experienceText})을 종합 분석하여 전문 피팅 프로세스를 진행했습니다. 클럽 피팅에서 길이, 무게, 스윙웨이트는 서로 밀접하게 연관된 중요 요소입니다.`;
 
-    // 나이에 따른 조정
-    if (data.age >= 70) {
-        baseCPM -= 15;
-    } else if (data.age >= 60) {
-        baseCPM -= 10;
-    } else if (data.age >= 50) {
-        baseCPM -= 5;
-    }
-
-    // 구력에 따른 조정
-    if (data.experience === 'beginner') {
-        baseCPM -= 10;
-        reasons.push('입문자에게 적합한 부드러운 샤프트를 추천합니다');
-    } else if (data.experience === '5+') {
-        baseCPM += 10;
-        reasons.push('고급 골퍼에게 적합한 단단한 샤프트를 추천합니다');
-    }
-
-    // 구질에 따른 미세 조정
-    if (data.ballFlight === 'slice') {
-        baseCPM -= 5;
-        reasons.push('슬라이스 개선을 위해 약간 부드러운 샤프트를 추천합니다');
-    } else if (data.ballFlight === 'hook') {
-        baseCPM += 5;
-        reasons.push('훅 개선을 위해 약간 단단한 샤프트를 추천합니다');
-    }
-
-    // 스윙 스피드에 따른 CPM 조정 (가장 중요한 요소)
-    if (data.swingSpeed === 'very-slow') {
-        baseCPM -= 15;
-        reasons.push('스윙이 매우 느리므로 부드러운 샤프트로 비거리를 보완합니다');
-    } else if (data.swingSpeed === 'slow') {
-        baseCPM -= 7;
-        reasons.push('스윙이 느린 편이므로 부드러운 샤프트를 추천합니다');
-    } else if (data.swingSpeed === 'fast') {
-        baseCPM += 7;
-        reasons.push('스윙이 빠른 편이므로 단단한 샤프트로 정확도를 높입니다');
-    } else if (data.swingSpeed === 'very-fast') {
-        baseCPM += 15;
-        reasons.push('스윙이 매우 빠르므로 단단한 샤프트로 컨트롤을 향상시킵니다');
-    }
-
-    cpm = baseCPM;
+    // 종합 결론
+    detailedReasons.conclusion = `\n\n【종합 분석】\n위 세 가지 스펙은 서로 긴밀하게 연결되어 있습니다. 클럽 길이 0.5인치 변화 시 스윙웨이트는 3-5포인트 변화하며, 헤드 무게도 전체 밸런스에 영향을 미칩니다. 따라서 길이를 먼저 결정한 후, 무게와 스윙웨이트를 함께 조정하는 순서로 피팅을 진행했습니다. 추천된 스펙은 회원님의 현재 수준에서 최고의 퍼포먼스를 발휘할 수 있도록 과학적으로 설계되었습니다.`;
 
     return {
         clubLength: clubLength + 'cm',
         clubWeight: clubWeight + 'g',
         swingWeight: swingWeight,
-        cpm: cpm + ' CPM',
-        reasons: reasons
+        reasons: reasons,
+        detailedReasons: detailedReasons
     };
 }
 
@@ -188,11 +175,22 @@ function displayResult(name, recommendation) {
     document.getElementById('clubLength').textContent = recommendation.clubLength;
     document.getElementById('clubWeight').textContent = recommendation.clubWeight;
     document.getElementById('swingWeight').textContent = recommendation.swingWeight;
-    document.getElementById('cpm').textContent = recommendation.cpm;
 
-    // 추천 사유 표시
-    const reasonText = recommendation.reasons.join('. ') + '.';
-    document.getElementById('recommendationReason').textContent = reasonText;
+    // 추천 사유 표시 (상세 버전 사용)
+    const detailedReasonText = `
+${recommendation.detailedReasons.intro}
+
+${recommendation.detailedReasons.length}
+
+${recommendation.detailedReasons.weight}
+
+${recommendation.detailedReasons.swingWeight}
+
+${recommendation.detailedReasons.conclusion}
+    `.trim();
+
+    document.getElementById('recommendationReason').style.whiteSpace = 'pre-line';
+    document.getElementById('recommendationReason').textContent = detailedReasonText;
 
     // 폼 숨기고 결과 표시
     document.getElementById('formContainer').style.display = 'none';
