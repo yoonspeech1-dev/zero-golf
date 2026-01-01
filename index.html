@@ -83,28 +83,22 @@
                     <label>팔 길이 입력 방식</label>
                     <div class="arm-length-options">
                         <label class="radio-option">
-                            <input type="radio" name="armLengthMethod" value="auto" checked>
-                            <span>키 대비 평균값 자동 계산 (추천)</span>
+                            <input type="radio" name="armLengthMethod" value="manual" checked>
+                            <span>직접 측정한 값 입력 (추천)</span>
                         </label>
                         <label class="radio-option">
-                            <input type="radio" name="armLengthMethod" value="manual">
-                            <span>직접 측정한 값 입력</span>
+                            <input type="radio" name="armLengthMethod" value="auto">
+                            <span>키 대비 평균값 자동 계산</span>
                         </label>
                     </div>
                 </div>
 
-                <div class="form-group" id="armLengthInputGroup" style="display: none;">
+                <div class="form-group" id="armLengthInputGroup">
                     <label for="armLength">팔 길이 (손목-지면 거리, cm)</label>
-                    <div class="help-text">
+                    <div class="help-text" id="armLengthHelpText">
                         📏 <strong>측정 방법:</strong> 운동화를 신고 벽에 등을 대고 똑바로 선 후, 팔을 몸 옆에 자연스럽게 늘어뜨린 상태에서 지면부터 손목 주름선까지의 거리를 측정합니다.
                     </div>
-                    <input type="number" id="armLength" name="armLength" min="60" max="120">
-                </div>
-
-                <div class="form-group" id="armLengthAutoGroup">
-                    <div class="help-text">
-                        ✅ <strong>자동 계산 모드:</strong> 입력하신 키를 기반으로 평균 팔 길이(키의 51.5%)를 자동으로 계산합니다. 대부분의 경우 이 방법이 충분히 정확합니다.
-                    </div>
+                    <input type="number" id="armLength" name="armLength" min="60" max="120" required>
                 </div>
 
                 <div class="form-group">

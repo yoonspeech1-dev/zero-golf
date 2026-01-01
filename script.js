@@ -1,16 +1,16 @@
 // 팔 길이 입력 방식 전환
 const armLengthRadios = document.querySelectorAll('input[name="armLengthMethod"]');
-const armLengthInputGroup = document.getElementById('armLengthInputGroup');
-const armLengthAutoGroup = document.getElementById('armLengthAutoGroup');
 const armLengthInput = document.getElementById('armLength');
+const armLengthHelpText = document.getElementById('armLengthHelpText');
 
 armLengthRadios.forEach(radio => {
     radio.addEventListener('change', function() {
         if (this.value === 'auto') {
             // 자동 계산 모드
-            armLengthInputGroup.style.display = 'none';
-            armLengthAutoGroup.style.display = 'block';
-            armLengthInput.removeAttribute('required');
+            armLengthInput.setAttribute('readonly', 'readonly');
+            armLengthInput.style.backgroundColor = '#f5f5f5';
+            armLengthInput.style.cursor = 'not-allowed';
+            armLengthHelpText.innerHTML = '✅ <strong>자동 계산 모드:</strong> 입력하신 키를 기반으로 평균 팔 길이(키의 51.5%)를 자동으로 계산합니다.';
 
             // 키가 입력되어 있으면 자동 계산
             const height = parseInt(document.getElementById('height').value);
@@ -20,9 +20,10 @@ armLengthRadios.forEach(radio => {
             }
         } else {
             // 수동 입력 모드
-            armLengthInputGroup.style.display = 'block';
-            armLengthAutoGroup.style.display = 'none';
-            armLengthInput.setAttribute('required', 'required');
+            armLengthInput.removeAttribute('readonly');
+            armLengthInput.style.backgroundColor = 'white';
+            armLengthInput.style.cursor = 'text';
+            armLengthHelpText.innerHTML = '📏 <strong>측정 방법:</strong> 운동화를 신고 벽에 등을 대고 똑바로 선 후, 팔을 몸 옆에 자연스럽게 늘어뜨린 상태에서 지면부터 손목 주름선까지의 거리를 측정합니다.';
         }
     });
 });
@@ -35,7 +36,7 @@ document.getElementById('height').addEventListener('input', function(e) {
     if (isAutoMode && height && height >= 100 && height <= 250) {
         // 키의 51.5%를 기본 팔 길이로 계산 (평균 비율)
         const suggestedArmLength = Math.round(height * 0.515);
-        document.getElementById('armLength').value = suggestedArmLength;
+        armLengthInput.value = suggestedArmLength;
     }
 });
 
